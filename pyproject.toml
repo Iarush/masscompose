@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "masscompose"
+version = "0.1.0"
+author = [name = "Aarush B", email = "aarush.bhavanam@gmail.com"]
+description = "Compose mesh inertia and point masses into a combined COM/inertia tensor"
+readme = "README.md"
+dependencies = [
+    "trimesh>=4.0",
+    "numpy>=1.24",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+# ^ stuff YOU need to develop/test, but users installing the package don't need
+
+
+
