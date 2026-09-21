@@ -17,7 +17,10 @@ license-files = ["LICEN[CS]E*"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
-# ^ stuff YOU need to develop/test, but users installing the package don't need
+
+[project.urls]
+Homepage = "https://github.com/Iarush/masscompose"
+
 
 
 
