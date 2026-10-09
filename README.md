@@ -23,7 +23,32 @@ checkout, `pip install -e ".[dev]"` adds `pytest`.
 
 ## Testing
 
-**Install the Release** DEMO MAss 
+Download the Demo.zip file from the releases page.
+
+For the first run start the app with
+```
+python run.py
+```
+
+(Mac/Linux users can also run `./run.sh`.)
+
+This is the only setup step. It creates a local `.venv`, installs
+`masscompose` from PyPI plus this demo's own dependencies (`pyvista`,
+`numpy`, `Pillow`) into it, then launches the app. `tkinter` is used for the GUI and ships with the Python standard
+library (on Linux it may be a separate `python3-tk` package).
+
+### Usage
+
+For usage after the initial run, you can launch the app directly with the
+virtual environment's Python (the dependencies were installed there):
+
+```
+.venv\Scripts\python app.py      # Windows
+.venv/bin/python app.py          # Mac/Linux
+```
+Using this step will reduce the time required to boot up the demo app, since
+it skips the install checks.
+
 
 ## Usage
 
