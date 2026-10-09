@@ -12,6 +12,11 @@ mass, not from the origin, and the resulting tensor is symmetric and
 positive semi-definite either way, so a wrong one looks entirely plausible
 until the thing it describes tumbles in simulation.
 
+## PyPI Source
+
+The package can be foudn in the PyPI directory here:
+https://pypi.org/project/masscompose/
+
 ## Installation
 
 ```
