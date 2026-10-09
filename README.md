@@ -1,11 +1,12 @@
 # MassCompose
 
-Combine a mesh's inertia with the point masses bolted to it — battery, motor,
-controller — into one total mass, one centre of mass, and one 3×3 inertia
+## Goal
+A Python package that helps combine a baseline mesh's inertia and Center of Mass with the point masses bolted to it, such as a battery, motor,
+controller, into one total mass, one centre of mass, and one 3×3 inertia
 tensor about that centre of mass.
 
-`trimesh` already gives you the mesh's own properties. The part that gets
-written wrong by hand is the parallel-axis composition that folds discrete
+`trimesh` is an existing package that already gives you the mesh's own properties. 
+The part this package adds is the parallel-axis composition that folds discrete
 masses in with it: the shifts have to be taken from the *system* centre of
 mass, not from the origin, and the resulting tensor is symmetric and
 positive semi-definite either way, so a wrong one looks entirely plausible
@@ -19,6 +20,10 @@ pip install masscompose
 
 Runtime dependencies are `numpy` and `trimesh`, and nothing else. From a
 checkout, `pip install -e ".[dev]"` adds `pytest`.
+
+## Testing
+
+**Install the Release** DEMO MAss 
 
 ## Usage
 
@@ -60,9 +65,9 @@ com  = [0.00298, -0.00393, 0.0331] m
 
 Point-mass positions are in metres, in the same frame as the mesh file's
 coordinates after unit conversion. The tensor is about `mp.com`, which is why
-the `<origin>` carries it — the two have to agree or the block is wrong.
+the `<origin>` carries it.
 
-## If you only need mesh inertia
+## Mesh inertia
 
 You do not need this package. `trimesh` does it in three lines:
 
@@ -72,7 +77,7 @@ mesh.apply_scale(0.001)   # your file's units -> metres
 mesh.density = 1240.0     # then read mesh.mass, mesh.center_mass, mesh.moment_inertia
 ```
 
-Reach for MassCompose when there are discrete masses to fold in on top of that.
+Use MassCompose when there are discrete masses to add on top of that.
 
 ## Scope
 
@@ -131,13 +136,3 @@ MassProperties(mass: float, com: np.ndarray, inertia: np.ndarray)
 ```
 What `compose` returns: same three fields, same convention.
 
-## Tests
-
-```
-pytest
-```
-
-Mesh properties are checked against closed-form values for a sphere, box, and
-cylinder; composition against hand-computed parallel-axis results, including
-the off-diagonal signs; and the URDF block by round-tripping the XML back to a
-3×3.
