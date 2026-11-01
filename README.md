@@ -1,15 +1,16 @@
 # MassCompose
 
-Combine a mesh's inertia with the point masses bolted to it — battery, motor,
-controller — into one total mass, one centre of mass, and one 3×3 inertia
-tensor about that centre of mass.
+MassCompose takes a mesh and the point masses bolted to it, like a battery, motor, or controller, and gives you one total mass, one center of mass, and one 3×3 inertia tensor about that center of mass.
 
-`trimesh` already gives you the mesh's own properties. The part that gets
-written wrong by hand is the parallel-axis composition that folds discrete
-masses in with it: the shifts have to be taken from the *system* centre of
-mass, not from the origin, and the resulting tensor is symmetric and
-positive semi-definite either way, so a wrong one looks entirely plausible
-until the thing it describes tumbles in simulation.
+`trimesh` already handles the mesh's own properties, so the part this package adds is the parallel-axis composition. The shifts have to come from the system center of mass instead of the origin, since a wrong tensor is still symmetric and positive semi-definite and looks fine until the simulation starts tumbling.
+
+## PyPI release
+
+https://pypi.org/project/masscompose/
+
+## Demo app
+
+There's a small GUI demo in the releases page as `Demo.zip`. Unzip it and run `python run.py` (or `./run.sh` on Mac/Linux), which sets up a local `.venv` and installs everything the first time. After that you can skip the install checks by launching `app.py` with the venv's Python directly, `.venv\Scripts\python app.py` on Windows or `.venv/bin/python app.py` on Mac/Linux.
 
 ## Installation
 
@@ -17,8 +18,7 @@ until the thing it describes tumbles in simulation.
 pip install masscompose
 ```
 
-Runtime dependencies are `numpy` and `trimesh`, and nothing else. From a
-checkout, `pip install -e ".[dev]"` adds `pytest`.
+It only needs `numpy` and `trimesh`. From a checkout, `pip install -e ".[dev]"` adds `pytest`.
 
 ## Usage
 
@@ -28,11 +28,10 @@ import trimesh
 
 from masscompose import PointMass, compose, load_mesh, to_urdf_inertial
 
-# Stand-in for your own file, so this example runs as written:
-# a 300 x 200 x 8 mm chassis plate, exported in millimetres.
+# Stand-in for your own file: a 300 x 200 x 8 mm plate, exported in mm
 trimesh.creation.box(extents=[300.0, 200.0, 8.0]).export("chassis.stl")
 
-# PETG at 40% infill. Units are declared, never guessed.
+# PETG at 40% infill. Units are always declared, never guessed
 chassis = load_mesh("chassis.stl", mesh_units="mm", density=1240.0, infill=0.4)
 
 payload = [
@@ -58,86 +57,56 @@ com  = [0.00298, -0.00393, 0.0331] m
 </inertial>
 ```
 
-Point-mass positions are in metres, in the same frame as the mesh file's
-coordinates after unit conversion. The tensor is about `mp.com`, which is why
-the `<origin>` carries it — the two have to agree or the block is wrong.
+Point mass positions are in meters and share the mesh file's frame after unit conversion. The tensor is about `mp.com`, which is why the `<origin>` carries it.
 
-## If you only need mesh inertia
+## If you only need the mesh
 
-You do not need this package. `trimesh` does it in three lines:
+You don't need this package for that, since `trimesh` does it in three lines:
 
 ```python
 mesh = trimesh.load("chassis.stl", force="mesh")
-mesh.apply_scale(0.001)   # your file's units -> metres
+mesh.apply_scale(0.001)   # your file's units -> meters
 mesh.density = 1240.0     # then read mesh.mass, mesh.center_mass, mesh.moment_inertia
 ```
 
-Reach for MassCompose when there are discrete masses to fold in on top of that.
+Use MassCompose when there are discrete masses to add on top.
 
 ## Scope
 
-| Does | Does not |
+| Does | Doesn't |
 |---|---|
-| One watertight mesh, given a density or a known mass | Multi-body assemblies, or sub-bodies with their own orientation |
-| N point masses at explicit XYZ | Point masses with extent of their own |
-| Parallel-axis composition about the system centre of mass | Dynamics, simulation, or anything time-dependent |
-| Mandatory `mesh_units` — `"mm"`, `"cm"`, `"m"` | Guessing units from the file |
-| Effective density via `infill` for printed parts | Per-region or graded density |
-| Watertightness, volume, and density checks that raise | Repairing a broken mesh |
-| Post-condition checks: symmetry, positive semi-definiteness, triangle inequality | Silently returning a plausible-looking wrong tensor |
+| One watertight mesh with a density or known mass | Multi-body assemblies or sub-bodies with their own orientation |
+| N point masses at explicit XYZ | Point masses with their own extent |
+| Required `mesh_units` (`"mm"`, `"cm"`, `"m"`) | Guess units from the file |
+| Effective density through `infill` | Per-region or graded density |
+| Raises on open meshes and bad inertia | Repair a broken mesh |
 | URDF `<inertial>` export | MJCF, USD, SDF |
-| SI throughout — kg, m, kg·m² | Any other unit system on output |
+
+Everything is SI on output: kg, m, kg·m².
 
 ## API
-
-The importable surface is these six names and nothing else.
 
 ```python
 load_mesh(path, *, mesh_units, density=None, mass=None, infill=1.0, allow_open=False) -> MeshBody
 ```
-Mass properties of one mesh file, in SI, with `inertia` about the mesh's own
-COM. Exactly one of `density` (kg/m³) or `mass` (kg) is required. `infill`
-scales density for printed parts and cannot be combined with `mass`. Raises
-`ValueError` on a non-watertight mesh unless `allow_open=True` downgrades it
-to a warning.
+Mass properties of one mesh, with `inertia` about the mesh's own COM. You need exactly one of `density` (kg/m³) or `mass` (kg), and `infill` can't be combined with `mass`. A non-watertight mesh raises `ValueError` unless `allow_open=True`, which turns it into a warning.
 
 ```python
 compose(body: MeshBody, point_masses: Sequence[PointMass]) -> MassProperties
 ```
-Total mass, system COM, and the inertia tensor about that COM. An empty
-`point_masses` returns the mesh's own properties. Validates its own output.
+Total mass, system COM, and the inertia tensor about that COM. An empty list just returns the mesh's own properties, and the output is checked before it's returned.
 
 ```python
 to_urdf_inertial(mp: MassProperties) -> str
 ```
-The `<inertial>` block as a string, ready to paste inside a `<link>`. The six
-`i**` attributes are matrix entries, so `ixy` is `inertia[0, 1]` — the standard
-physics product of inertia, no sign flip.
+The `<inertial>` block as a string, ready to paste inside a `<link>`. The `i**` attributes are plain matrix entries (`ixy` is `inertia[0, 1]`), so there's no sign flip.
 
 ```python
 PointMass(position: np.ndarray, mass: float, name: str | None = None)
 ```
-A discrete mass, in the mesh's frame. `position` must be shape `(3,)` exactly —
-a `(3, 1)` column is rejected rather than flattened, because a transposed
-vector reaches the parallel-axis step and comes out wrong but plausible.
+A discrete mass in the mesh's frame. `position` has to be shape `(3,)`, and a `(3, 1)` column gets rejected instead of flattened since a transposed vector gives a wrong but plausible answer.
 
 ```python
-MeshBody(mass: float, com: np.ndarray, inertia: np.ndarray)
+MeshBody(mass, com, inertia)         # returned by load_mesh
+MassProperties(mass, com, inertia)   # returned by compose
 ```
-What `load_mesh` returns: `inertia` about `com`, in SI.
-
-```python
-MassProperties(mass: float, com: np.ndarray, inertia: np.ndarray)
-```
-What `compose` returns: same three fields, same convention.
-
-## Tests
-
-```
-pytest
-```
-
-Mesh properties are checked against closed-form values for a sphere, box, and
-cylinder; composition against hand-computed parallel-axis results, including
-the off-diagonal signs; and the URDF block by round-tripping the XML back to a
-3×3.
