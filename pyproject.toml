@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "masscompose"
-version = "0.1.0"
+version = "0.1.1"
 author = [{name = "Aarush B", email = "aarush.bhavanam@gmail.com"}]
 description = "Compose mesh inertia and point masses into a combined COM/inertia tensor"
 readme = "README.md"
