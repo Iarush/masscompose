@@ -1,15 +1,14 @@
 """Combine a mesh body with point masses into one set of mass properties.
 
-1. The system centre of mass is the mass-weighted average of the stl body each point mass\  centre of mass.
+1. The system centre of mass is the mass-weighted average of the mesh body's centre of mass and each point mass's position.
 2. Every body's tensor is shifted from its own centre of mass by the parallel axis theorem, and the shifted tensors add.
 
-A point mass has no extent to simplify calculations, so its own tensor is exactly zero and its whole
+A point mass has no extent, so its own tensor is exactly zero and its whole
 contribution is the shift term. That zero is written out rather than special-
 cased, so the mesh and the point masses travel the same code path.
 
-The eigen-decomposition, quaternion conversion, and arm-length averaging that
-the predecessor bolted onto the end of this are consumer concerns, and are not
-here.
+Eigen-decomposition, quaternion conversion, and arm-length averaging are
+consumer concerns and are not done here.
 """
 
 from __future__ import annotations

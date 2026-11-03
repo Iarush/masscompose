@@ -19,8 +19,7 @@ __all__ = ["MeshUnits", "PointMass", "MeshBody", "MassProperties"]
 
 
 class MeshUnits(str, Enum):
-    """Create a uniform scale for the mesh based on what units are called.
-    """
+    """Length units a mesh file may be in; each maps to a scale factor to metres."""
 
     MM = "mm"
     CM = "cm"
@@ -28,7 +27,7 @@ class MeshUnits(str, Enum):
 
     @property
     def scale(self) -> float:
-        """Scales everything to be on Meters scale"""
+        """Multiplier that converts these units to metres."""
         return _SCALE[self]
 
     @classmethod

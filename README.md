@@ -19,7 +19,7 @@ There's a small GUI demo in the github releases page
 pip install masscompose
 ```
 
-It only needs `numpy` and `trimesh`. From a checkout, `pip install -e ".[dev]"` adds `pytest`.
+It only needs `numpy` and `trimesh`, and Python 3.13 or newer.
 
 ## Usage
 
