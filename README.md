@@ -11,7 +11,7 @@ https://pypi.org/project/masscompose/
 ## Demo app
 
 There's a small GUI demo in the github releases page
-(https://github.com/Iarush/masscompose) as `Demo.zip`. Unzip it and run `python run.py` (or `./run.sh` on Mac/Linux), which sets up a local `.venv` and installs everything the first time. After that you can skip the install checks by launching `app.py` with the venv's Python directly, `.venv\Scripts\python app.py` on Windows or `.venv/bin/python app.py` on Mac/Linux.
+(https://github.com/Iarush/masscompose) as `DEMO-DOWNLOAD-MassCompose.zip`. Unzip it and run `python run.py` (or `./run.sh` on Mac/Linux), which sets up a local `.venv` and installs everything the first time. After that you can skip the install checks by launching `app.py` with the venv's Python directly, `.venv\Scripts\python app.py` on Windows or `.venv/bin/python app.py` on Mac/Linux.
 
 ## Installation
 

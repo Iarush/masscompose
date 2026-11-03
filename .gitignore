@@ -1,2 +1,21 @@
-#PyPI Build files
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python caches / build output
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
 dist/
+.pytest_cache/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Secrets
+.env
