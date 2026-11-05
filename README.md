@@ -10,8 +10,10 @@ https://pypi.org/project/masscompose/
 
 ## Demo app
 
-There's a small GUI demo in the github releases page
-(https://github.com/Iarush/masscompose) as `DEMO-DOWNLOAD-MassCompose.zip`. Unzip it and run `python run.py` (or `./run.sh` on Mac/Linux), which sets up a local `.venv` and installs everything the first time. After that you can skip the install checks by launching `app.py` with the venv's Python directly, `.venv\Scripts\python app.py` on Windows or `.venv/bin/python app.py` on Mac/Linux.
+There's a small GUI demo in the GitHub releases page
+(https://github.com/Iarush/masscompose) as `DEMO-DOWNLOAD-MassCompose.zip`. Unzip it and run `python run.py` (or `./run.sh` on Mac/Linux), which sets up a local `.venv` and installs everything the first time. After that, you can skip the install checks by launching `app.py` with the venv's Python directly: `.venv\Scripts\python app.py` on Windows or `.venv/bin/python app.py` on Mac/Linux.
+
+This demo uses pyvista and allows you to visualize what the masscompose package does. You can select pre-configured STLs or upload your own STL. Then you can input the weights and coordinates of point masses that you want to add to the STL. Then Mass Compose does its magic, and you can visualize where the updated COM would be
 
 ## Installation
 
