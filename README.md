@@ -15,6 +15,9 @@ There's a small GUI demo in the GitHub releases page
 
 This demo uses pyvista and allows you to visualize what the masscompose package does. You can select pre-configured STLs or upload your own STL. Then you can input the weights and coordinates of point masses that you want to add to the STL. Then Mass Compose does its magic, and you can visualize where the updated COM would be
 
+<img width="1600" height="794" alt="image" src="https://github.com/user-attachments/assets/5f7ebcd7-2b36-4e39-8657-f8e8588f977b" />
+
+
 ## Installation
 
 ```
